@@ -1,0 +1,12 @@
+﻿  funcao_forca.cpp
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(110,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(116,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(121,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(122,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(124,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(129,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(131,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(132,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(134,17): warning C4129: '/': sequência de escape de caractere não reconhecida
+C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\Forca\funcao_forca.cpp(166,15): warning C4244: 'argumento': conversão de 'time_t' para 'unsigned int', possível perda de dados
+  Forca.vcxproj -> C:\Users\Carlos Bruno\Alura\C++\Avançando com C++ entenda melhor a linguagem\Forca\x64\Debug\Forca.exe

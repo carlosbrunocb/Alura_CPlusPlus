@@ -38,7 +38,6 @@
       do código só precisamos compilar o aquivo em que ele se encontra e depois gerar o executavel pelo
       processo de ligação das unidade de tradução.
        
-
 @ [C++] NOTAS
   # extern: é um comando usado em variáveis globais, funções ou declaração de template
       para especificar que há uma LIGAÇÃO EXTERNA ("external linkage"), ou seja, evitar 
@@ -155,4 +154,101 @@
       #include "creature.h"
       #include "animal.h"
 
+  # inline functions: informa ao compilador para substituir o código na definição função
+      para cada instância da chamada da função.
+      * Pode permitir que seu programa seja mais rápido porque ele elimina a sobrecarga 
+        associada às chamadas de função.
+      * A substituição do código embutido ocorre a critério do compilador. Por exemplo, o 
+        compilador não vai embutir uma função se seu endereço já estiver em uso ou se for 
+        muito grande para embutir.
+      * Esses tipos devem ser declarados no cabeçalho porque ela serão trazidas para dentro
+        da função, ou seja, ele irá ficar na mesma unidade de tradução.
+        OBS.:
+          + Arquivos cabeçalho não são compliados. Eles são importados para dentro do código que os
+            inclue. (Mesmo conceito das funções embutidas - inline fucntios) 
+          + Para o compilador decidir isso ele precisa conhecer a função.
+      * Uma função definida no corpo de uma declaração de classe é, implicitamente, uma 
+        função embutida.
+      * Uma função inline não é compilada por si só. Se você modificar uma função inline, 
+        todos os arquivos que a usam vão precisar ser recompilados.
 
+      Ex.:
+        // Inline_Member_Functions.cpp
+        class Account
+        {
+        public:
+            Account(double initial_balance) { balance = initial_balance; }
+            double GetBalance();
+            double Deposit( double Amount );
+            double Withdraw( double Amount );
+        private:
+            double balance;
+        };
+
+        inline double Account::GetBalance()
+        {
+            return balance;
+        }
+
+        inline double Account::Deposit( double Amount )
+        {
+            return ( balance += Amount );
+        }
+
+        inline double Account::Withdraw( double Amount )
+        {
+            return ( balance -= Amount );
+        }
+        int main()
+        {
+        }
+  # Desreferenciação de ponteiro: 
+    Ex.:
+      map<string, int>* variable;
+      vector<string>* variable0;
+
+      (*variable)[str] = 1;
+      variable0->push_back(str);
+      (*variable0).push_back(str);
+
+  # Referencia em c++: Em c++ pode-se passar referências de maneiras "simplificada"
+      dentro da função que o compilador vai entender que está passando um endereço
+      não precisando desreferenciar depois.
+      Ex.:
+        function(char& var, int& var1);
+
+        //In the function call
+        function(var, var1);
+  # const em referências: Usado para indicar que um parâmetro passado como referência
+      não será modificado o seu valor na função.
+      Ex.:
+        // const char& var indica que valor passado como referência não pode se modificado
+        function(const char& var, int& var1);
+  # static: Pode ser usado para definir uma variável global ou símbolo como existente apenas
+      na translate unit em que ela foi declarada. Logo, elas estarão acessiveis apenas dentro
+      da translate unit em forem declaradas.
+  # namespace: É uma declaritva regional que fornece um escopo para os identificadores (funções, 
+      nomes de tipos, variáveis, etc) inseridos nele. Eles são usados para organizar o código 
+      dentro de grupos locais e para previnir colisões de nomes que podem ocorrer quando o código
+      é baseado na inclusão de múltiplas bibliotecas.
+      Operardor de resolução de nomes :: 
+      Ex.:
+        namespace ContosoData
+        {
+            class ObjectManager
+            {
+            public:
+                void DoSomething() {}
+            };
+            void Func(ObjectManager) {}
+        }
+
+        ContosoData::ObjectManager mgr;
+        mgr.DoSomething();
+        ContosoData::Func(mgr);
+  # stack: bloco de memória que é alocado para um função, procedimento ou método em C++.
+      Ela contém a pilha de execução, onde são armezanadas os parâmetros, endereços de retorno
+      e variáveis locais de funções. Elas são estática e pré-alocada no inicio do programa e 
+      desalocada no final.
+      
+      
