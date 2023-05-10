@@ -1,0 +1,158 @@
+@ [Makefile]
+  * É um arquivo com configurações de build (compilação) dos arquivos c++
+
+  + Comentário: Para inserir comentários em um arquivo makefile basta usar o #.
+    Ex.: 
+         # Isso é um comentário e não será aplicado/lido quando o arquivo Makefile
+         # for executado.
+
+
+@ [VS-CODE] Dicas e comandos de edição de texto
+  * SEGURE o ctrl + alt [nessa ordem] e arraste para baixo até a linha desejada: 
+    Isso permite que várias linhas sejam editadas ao mesmo tempo
+    Ex:
+        chutou ['A'] = falso  ==>>      chutou ['A'] = falso  
+        |                               chutou ['M'] = verdadeiro
+        |                               chutou ['O'] = falso
+        |                               chutou ['R'] = falso
+                                
+@ [fstream] ifstream: leitura de arquivos
+  * '>>': consegue ser usado para ler uma linha do arquivo
+    Ex.: dados_do_arquivo >> variavel;
+
+@ [Compilação C++] Comandos de compilação
+  * Compilação de arquivos para geração da unidade de tradução (código binário) -
+    conhecido como código intermediário ou objeto.
+    [arquivo objeto: file.o]
+    Ex.: 
+      $ g++ -c file.cpp
+      >> resultado: file.o
+  * Compilação de arquivos para geração de um arquivo executável [linking]
+    [file.exe]
+    Ex.:
+      $ g++ -o *.cpp file.exe
+  
+  OBS.:
+    + Podemos gerar várias unidade de tradução (arquivos objetos). Isso permite, isolar a compilação
+      à arquivos individuais facilitando a manuntanção do software, pois, se precisar alterar uma parte
+      do código só precisamos compilar o aquivo em que ele se encontra e depois gerar o executavel pelo
+      processo de ligação das unidade de tradução.
+       
+
+@ [C++] NOTAS
+  # extern: é um comando usado em variáveis globais, funções ou declaração de template
+      para especificar que há uma LIGAÇÃO EXTERNA ("external linkage"), ou seja, evitar 
+      duplicidade de declaração e informar ao compilador que aquela declaração já existe em
+      algum arquivo ou parte da codificação e que novas declarações do mesmo identificador e 
+      tipo devem usar essa declaração extern. Logo, é criado uma LIGAÇÃO de declaração para todas
+      as suas duplicadas informando para usar apenas uma. 
+      UM -->> TODOS
+      O comando 'extern' tem quatro significado dependendo do contexto:
+        + Declaração de variáveis global não constante (non-const), extern especifica que variável
+          ou função é definida em outra unidade de tradução. O extern deve ser aplicado em todos os
+          arquivos exceto naquele onde a variável foi definida.
+        + Declaração de variáveis constantes (const), ele especifica que variável tem uma ligação 
+          externa. O extern deve ser aplicado a todas a declarações em todos os arquivos.
+        + extern "C" especifica que a função é definida em outro lugar e usa a chamada convencional 
+          da linguagem C. O extern "C" é um modificador que pode ser aplicado a múltiplas declarações
+          de funções em um bloco.
+        + Declaração de template, extern especifica que o template foi instanciado em outro lugar. 
+          extern informa ao compilador que ele pode reusar a outra instanciação, em vez de criar uma
+          nova no local atual.
+        Ex.:
+          - extern ligação para constantes não globais (non-const globals)
+              //fileA.cpp
+              int i = 42; // declaration and definition
+
+              //fileB.cpp
+              extern int i;  // declaration only. same as i in FileA
+
+              //fileC.cpp
+              extern int i;  // declaration only. same as i in FileA
+
+              //fileD.cpp
+              int i = 43; // LNK2005! 'i' already has a definition.
+              extern int i = 43; // same error (extern is ignored on definitions)
+
+          - extern ligação para constantes globais (const global)
+              //fileA.cpp
+              extern const int i = 42; // extern const definition
+
+              //fileB.cpp
+              extern const int i;  // declaration only. same as i in FileA
+          
+          - extern constexpr
+              extern constexpr int x = 10; //error LNK2005: "int const x" already defined
+              extern constexpr __declspec(selectany) int x = 10;
+          
+          - extern "C" e extern "C++" para declarações de funções
+              // Declare printf with C linkage.
+              extern "C" int printf(const char *fmt, ...);
+
+              //  Cause everything in the specified
+              //  header files to have C linkage.
+              extern "C" {
+                  // add your #include statements here
+              #include <stdio.h>
+              }
+
+              //  Declare the two functions ShowChar
+              //  and GetChar with C linkage.
+              extern "C" {
+                  char ShowChar(char ch);
+                  char GetChar(void);
+              }
+
+              //  Define the two functions
+              //  ShowChar and GetChar with C linkage.
+              extern "C" char ShowChar(char ch) {
+                  putchar(ch);
+                  return ch;
+              }
+
+              extern "C" char GetChar(void) {
+                  char ch;
+                  ch = getchar();
+                  return ch;
+              }
+
+              // Declare a global variable, errno, with C linkage.
+              extern "C" int errno;
+              ---------------------
+              extern "C" int CFunc1();
+              ...
+              int CFunc1();           // Redeclaration is benign; C linkage is
+                                      //  retained.
+
+              int CFunc2();
+              ...
+              extern "C" int CFunc2(); // Error: not the first declaration of
+                                       //  CFunc2;  cannot contain linkage
+                                       //  specifier.
+
+  #pragma once: Instrução de pré-processamento que informa que arquivo de cabeçalho será
+    incluído apenas uma vez pelo compilador.
+    * É uma diretiva de compilação não padrão (not standard), geralmente, utilizada para 
+      otimização de múltiplas includes (multiple-include optimization).
+      + Ela é usadar em headers para fazer com que o ficheiro atual apenas seja incluído 
+        uma vez durante o processo de compilação.
+    Ex.:
+      File "creature.h"
+
+      #pragma once
+
+      struct creatureInfo
+      {
+          int member;
+      };
+      -----------------
+      File "animal.h"
+
+      #include "creature.h"
+      -----------------
+      File "human.h"
+
+      #include "creature.h"
+      #include "animal.h"
+
+
