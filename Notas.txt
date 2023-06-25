@@ -224,9 +224,17 @@
       Ex.:
         // const char& var indica que valor passado como referência não pode se modificado
         function(const char& var, int& var1);
-  # static: Pode ser usado para definir uma variável global ou símbolo como existente apenas
-      na translate unit em que ela foi declarada. Logo, elas estarão acessiveis apenas dentro
-      da translate unit em forem declaradas.
+  # static: 
+      + Usado para definir variáveis globais: Pode ser usado para definir uma variável global ou símbolo 
+          como existente apenas na translate unit em que ela foi declarada. Logo, elas estarão acessiveis 
+          apenas dentro da translate unit em forem declaradas.
+      + Usado para definir atributos globais dentro de uma classe: Permitir que um atributo seja global,
+          ou seja, que todos objetos que possuem atributos static acessam o mesmo ou um único espaço de 
+          memória. Logo, todos possuem o mesmo valor do atributo estático e qualquer modificação nesse 
+          atributo irá refletir todos os objetos.
+          [Atributos Compartilhandos entre objetos]
+      + Usado para tornar métodos acessiveis sem instanciar um objeto.
+        [membro que pertence a classe - método estático]
   # namespace: É uma declaritva regional que fornece um escopo para os identificadores (funções, 
       nomes de tipos, variáveis, etc) inseridos nele. Eles são usados para organizar o código 
       dentro de grupos locais e para previnir colisões de nomes que podem ocorrer quando o código
@@ -250,5 +258,73 @@
       Ela contém a pilha de execução, onde são armezanadas os parâmetros, endereços de retorno
       e variáveis locais de funções. Elas são estática e pré-alocada no inicio do programa e 
       desalocada no final.
+      OBS.:
+        * A alocação de memória para stack frame, em geral, exigi apenas uma instrução.
+  # heap: Área de memória fora da stack usada para alocação dinâmica de memória de diferentes
+      tamanhos. Ela contém blocos de memória alocadas dinamicamente, a pedido do processo, 
+      durante sua execução e varia de tamanho durante a vida do processo. Ela não impõe um 
+      modelo ou padrão de alocação como no modelo stack. 
+      OBS.:
+        * O uso da heap é mais custoso que frame stack. Em sua operação é necessário a alocação
+          e desalocação de memória de forma dinâmica baseado em um conjunto de operações que 
+          necessita consulta uma free list. Essa lista contém informações de um conjunto de 
+          endereços disponíveis para alocação de memória com diferentes tamanhos. Portanto,
+          durante a alocação de memória há a necessidade de consultar essa lista para encontrar
+          dentre o conjunto de endereços, um com o tamanho que consiga comportar a solicitação de
+          alocação, ou seja, um endereço com tamanho de memória solicitado. Além disso, a free list
+          deve ser atualizada após a alocação informando o tamanho e o endereço que foi utilizado.
+  # struct e class: diferença de declaração de classes usando struct e class.
+    + struct: a declaração de atributos e métodos sem a declaração explicita de modificadores de 
+        acesso são por padrão todos públicos. [Tudo é público]
+    + class: a declaração de atributos e métodos sem a declaração explicita de modificadores de 
+        acesso são por padrão todos privados. [Tudo é privado]
+  # Metódo usando o modificador const: usado para informar que o método não pode modificar a classe 
+      ou seja, não pode modificar os atributos da classe/objeto.
+  # initialization list: Forma de codificar os construtores para inicializar os atributos da classe.
+      O uso de lista de inicialização "economiza" a alocação de memória para as variáveis que são usadas 
+      como intermediário de cópia para atributo do objeto criado. Ela evita um passo a mais de processamento
+      sendo um pouco mais rápido que o convencional.
+      + Elas evitam a inicialização duplicada de objetos realcionados.
+      Ex.:
+        Conta::Conta(std::string numero, std::string nomeTitular, std::string cpfTitular) : 
+          numero(numero), nomeTitular(nomeTitular), cpfTitular(cpfTitular) {
+        }
+  # Construção implícita: o C++ consegue fazer uma correspondência de valores no momento da construção e 
+      selecionar um construção que se adeque ao valor passo como parâmetro de construção.
+      Ex.:
+
+        // classe Titular
+        // ...
+        Titular::Titular(std::string nome, Cpf cpf) :
+        nome(nome), cpf(cpf) {
+          verificaTamanhoDoNome();
+        }
+
+        // classe Cpf
+        // ...
+        Cpf::Cpf(std::string n_cpf) : n_cpf(n_cpf){
+          //"243.456.780-10"
+          verificaCpf();
+        }
+
+        // main
+        // ...
+        Titular titular_01("Vinicius", string("123.456.798-10"));
+
+  # Construção explícita: Impedi o uso da construção implícita
+      Ex.:
+        class Cpf {
+        private:
+          std::string n_cpf;
+
+          void verificaCpf();
+
+        public:
+          explicit Cpf(std::string n_cpf);
+
+          std::string recuperaNumeroDoCpf();
+
+        };
+
       
       
