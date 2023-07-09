@@ -37,7 +37,17 @@
       à arquivos individuais facilitando a manuntanção do software, pois, se precisar alterar uma parte
       do código só precisamos compilar o aquivo em que ele se encontra e depois gerar o executavel pelo
       processo de ligação das unidade de tradução.
-       
+
+@ [vtable] virtual method table (VMT), virtual function table, virtual call table, dispatch table
+  * É um mecanismo usado na linguagem de programação para fornecer o despacho dinâmico 
+    [polimorfismo | vinculação de métodos em tempo de execução].
+  * Sempre que uma classe define uma função virtual (ou método), a maioria dos compiladores 
+    adiciona uma variável de membro oculta à classe que aponta para um array de ponteiros 
+    de funções (virtuais) chamadas de tabela de método virtual. 
+  * Esses ponteiros são usados em tempo de execução para invocar apropriadas implementações de função, 
+    porque em tempo de compilação pode ainda não ser conhecido se a função base deve ser chamada 
+    ou derivada implementada por uma classe que herda da classe base.
+
 @ [C++] NOTAS
   # extern: é um comando usado em variáveis globais, funções ou declaração de template
       para especificar que há uma LIGAÇÃO EXTERNA ("external linkage"), ou seja, evitar 
@@ -219,11 +229,53 @@
 
         //In the function call
         function(var, var1);
-  # const em referências: Usado para indicar que um parâmetro passado como referência
-      não será modificado o seu valor na função.
-      Ex.:
-        // const char& var indica que valor passado como referência não pode se modificado
-        function(const char& var, int& var1);
+  # const: especifica que o objeto ou a variável não é modificável.
+      + Em declarações de variáveis: especifica que um valor de variável é constante e 
+          informa o compilador para impedir que o programador a modifique.
+        Ex.:
+          // constant_values1.cpp
+          int main() {
+            const int i = 5;
+            i = 10;   // C3892
+            i++;   // C2105
+          }
+      + Em parâmetro de funções passado como referências: Usado para indicar que um parâmetro 
+          passado como referência não será modificado o seu valor na função, ou seja, evitar que a 
+          função modifique um parâmetro passado como ponteiro.
+        Ex.:
+          // const char& var indica que valor passado como referência não pode se modificado
+          function(const char& var, int& var1);
+      + [metódos] Em funções membros: especifica que aquela é uma função “somente leitura” que 
+          não modifica o objeto para o qual é chamada. Ela não pode alterar membros de dados não 
+          estáticos ou chamar qualquer função membro que não seja uma constante.
+        Ex.:
+          // constant_member_function.cpp
+          class Date
+          {
+          public:
+            Date( int mn, int dy, int yr );
+            int getMonth() const;     // A read-only function
+            void setMonth( int mn );   // A write function; can't be const
+          private:
+            int month;
+          };
+
+          int Date::getMonth() const
+          {
+            return month;        // Doesn't modify anything
+          }
+          void Date::setMonth( int mn )
+          {
+            month = mn;          // Modifies data member
+          }
+          int main()
+          {
+            Date MyDate( 7, 4, 1998 );
+            const Date BirthDate( 1, 18, 1953 );
+            MyDate.setMonth( 4 );    // Okay
+            BirthDate.getMonth();    // Okay
+            BirthDate.setMonth( 4 ); // C2662 Error
+          }  
   # static: 
       + Usado para definir variáveis globais: Pode ser usado para definir uma variável global ou símbolo 
           como existente apenas na translate unit em que ela foi declarada. Logo, elas estarão acessiveis 
@@ -325,6 +377,109 @@
           std::string recuperaNumeroDoCpf();
 
         };
+  # protected: modificador de acesso de classe que permite que somente a classe e seus herdeiros
+      consigam acessar os seus atributos internos.
+  # Modificador de permissão na declaração de herança: modifica as permissões da classe herdada.
+      Portanto, se usar o public tudo que for público na classe herdada permanecerá público.
+      Se usar o protected todos membros public irão se torna protected e se usar private todos os 
+      membros ficarão privado.
+  # [Metódos] Funções virtuais: é uma função membro que espera-se que seja redefinida em classes derivadas. 
+      Quando você faz referência um objeto da classe derivada usando um ponteiro ou uma referência à 
+      classe base, pode chamar uma função virtual para esse objeto e executar a versão da classe derivada da função. 
+  # Destrutor com modificador virtual: Usado na classe base (pai) para informar que metódos destrutores implementados em 
+      classes derivadas devem ser executados quando a memória for liberada dos objetos criados, ou seja, deve-se chamar 
+      todos os destrutores para não gerar resíduos de memória (vazamento de memória) quando se ultiza a memória heap.
+  # final: modificador usado nas definições de classes para indicar que a classe criada não pode ser herdada.
+  # método virtual [abstrato]: métodos sem definições que são declarados em classes bases para serem implementados
+      nas classes derivadas. Métodos puramentes virtuais são definidos como "= 0".
+      Ex.:
+        virtual float taxaDeSaque() const = 0;
+  # Classe abstratas: em c++, classes abstratas são classes que possuem um ou mais classes puramente virtuais (métodos abstratos).
+      Ex.:
+        // deriv_AbstractClasses.cpp
+        // compile with: /LD
+        class Account {
+        public:
+          Account( double d );   // Constructor.
+          virtual double GetBalance();   // Obtain balance.
+          virtual void PrintBalance() = 0;   // Pure virtual function.
+        private:
+            double _balance;
+        };
+  # Herança Múltipla: em c++, é possível herda mais de uma classe ao mesmo tempo.
+      Ex.:
+        // Um exemplo de múltiplas classes base.
+        #include <iostream>
 
-      
-      
+        using namespace std;
+
+        class base1 {
+        protected:
+                  int x;
+        public:
+              void showx() { cout << x << "\n"; }
+        };
+
+        class base2 {
+        protected:
+                  int y;
+        public:
+              void showy() { cout << y << "\n"; }
+        };
+
+        class derived: public base1, public base2 // Inherit multiple base classes.
+        {
+        public:
+              void set(int i, int j) { x = i; y = j; }
+        };
+
+        int main()
+        {
+            derived ob;
+            ob.set(10, 20); // Disponível pela classe "derived"
+            ob.showx(); // Pela classe base1
+            ob.showy(); // Pela classe base2
+        #ifndef WIN32
+            system ("pause");
+        #endif
+            return 0;
+        }
+  # Herança Virtual: As classes de base podem ser usadas como herança virtual de forma a evitar que várias 
+      “instâncias” dela mesma por suas classes derivadas na hierarquia de herança múltipla.
+                 Classe A 
+                    |
+          |------------------|        
+      Classe B            Classe C
+          |------------------| 
+                    |
+                 Classe D  [Construção ambígua - AB ou AC    ]
+                           [A classe A é herdade várias vezes]
+      Ex.:
+        #include <iostream>
+        using namespace std;
+          
+        class A {
+        public:
+            int a;
+            A() // constructor
+            {
+                a = 10;
+            }
+        };
+          
+        class B : public virtual A {
+        };
+          
+        class C : public virtual A {
+        };
+          
+        class D : public B, public C {
+        };
+          
+        int main() {
+          
+          D object; // object creation of class d
+          cout << "a = " << object.a << endl;
+        
+          return 0;
+        }
